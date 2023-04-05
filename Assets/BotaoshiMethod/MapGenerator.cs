@@ -1,29 +1,67 @@
-﻿using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField, Tooltip("マップのサイズ横")] int _width;
-    [SerializeField, Tooltip("マップのサイズ縦")] int _height;
+    [Header("マップの全体サイズ")]
+    [SerializeField, Tooltip("マップサイズ"), Range(20, 50)] int _mapSize;
+    [Header("インスタンスするオブジェクト")]
+    [SerializeField, Tooltip("通路のオブジェクト")] GameObject _path;
+    [SerializeField, Tooltip("壁のオブジェクト")] GameObject _wall;
+    [SerializeField, Tooltip("プレイヤーのオブジェクト")] GameObject _player;
+    List<Position> _pathPosition = new List<Position>();
     int[,] _map;
+    int _width;
+    int _height;
 
-    void Start()
+    public int Width { get => _width; }
+    public int Height { get => _height; }
+
+    private void Awake()
+    {
+        _width = _mapSize;
+        _height = _mapSize;
+    }
+    public void Create()
     {
         _map = MapMethod.Generator(_width, _height);
-        Print(_map);
+        MapCreate(_map);
     }
 
-    void Print(int [,] map)
+    void MapCreate(int[,] map)
     {
-        for (int y = 0; y < map.GetLength(1); y++)
+        float y = 0;
+        for(int i = 0; i < map.GetLength(1); i++)
         {
-            for (int x = 0; x < map.GetLength(0); x++)
+            float x = 0;
+            for (int j = 0; j < map.GetLength(0); j++)
             {
-                Console.Write(map[x, y] == 1 ? "■" : "　");
+                if(map[i, j] == MapMethod.WALL)
+                {
+                    Instantiate(_wall, new Vector2(x, y), transform.rotation);
+                }
+                else
+                {
+                    _pathPosition.Add(new Position(x, y));
+                    Instantiate(_path, new Vector2(x, y), transform.rotation);
+                }
+                x += 1f;
             }
-            Console.WriteLine();
+            y += 1f;
+        }
+        PlayerSpawn();
+    }
+
+    void PlayerSpawn()
+    {
+        int random = Random.Range(0, _pathPosition.Count);
+        if (FindObjectsOfType<Player>().Length > 0)
+        {
+            FindObjectOfType<Player>().transform.position = new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0);
+        }
+        else
+        {
+            Instantiate(_player, new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0), transform.rotation);
         }
     }
 }

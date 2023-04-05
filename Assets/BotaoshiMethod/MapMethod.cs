@@ -2,8 +2,8 @@
 
 public static class MapMethod
 {
-    const int PATH = 0;　//通路
-    const int WALL = 1;　//壁
+    public const int PATH = 0;　//通路
+    public const int WALL = 1;　//壁
 
     public static int[,] Generator(int width, int height)
     {
