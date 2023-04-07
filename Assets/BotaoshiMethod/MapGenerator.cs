@@ -9,6 +9,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Tooltip("通路のオブジェクト")] GameObject _path;
     [SerializeField, Tooltip("壁のオブジェクト")] GameObject _wall;
     [SerializeField, Tooltip("プレイヤーのオブジェクト")] GameObject _player;
+    [SerializeField, Tooltip("ゴールのオブジェクト")] GameObject _goal;
     List<Position> _pathPosition = new List<Position>();
     int[,] _map;
     int _width;
@@ -22,11 +23,17 @@ public class MapGenerator : MonoBehaviour
         _width = _mapSize;
         _height = _mapSize;
     }
-    public void Create()
+    private void Start()
     {
         _map = MapMethod.Generator(_width, _height);
         MapCreate(_map);
     }
+
+    //public void Create()
+    //{
+    //    _map = MapMethod.Generator(_width, _height);
+    //    MapCreate(_map);
+    //}
 
     void MapCreate(int[,] map)
     {
@@ -55,13 +62,25 @@ public class MapGenerator : MonoBehaviour
     void PlayerSpawn()
     {
         int random = Random.Range(0, _pathPosition.Count);
+        Vector3 playerPosition = new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0);
         if (FindObjectsOfType<Player>().Length > 0)
         {
-            FindObjectOfType<Player>().transform.position = new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0);
+            FindObjectOfType<Player>().transform.position = playerPosition;
         }
         else
         {
-            Instantiate(_player, new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0), transform.rotation);
+            Instantiate(_player, playerPosition, transform.rotation);
+        }
+        GoalSpawn(playerPosition);
+    }
+
+    void GoalSpawn(Vector3 playerPosition)
+    {
+        int random = Random.Range(0, _pathPosition.Count);
+        Vector3 goalPosition = new Vector3(_pathPosition[random].x, _pathPosition[random].y, 0);
+        if (goalPosition != playerPosition)
+        {
+            Instantiate(_goal, goalPosition, transform.rotation);
         }
     }
 }
