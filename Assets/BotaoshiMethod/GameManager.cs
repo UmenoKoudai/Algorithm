@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GameManager : InstanceSystem<GameManager>
 {
-    [SerializeField] Text _stageText;
-    [SerializeField] PlayableDirector _director;
+    Text _stageText;
+    PlayableDirector _director;
     int _stageNumber = 1;
     bool _isGame;
 
@@ -15,14 +15,19 @@ public class GameManager : InstanceSystem<GameManager>
     private void Awake()
     {
         base.Awake();
-        _stageText.text = $"{_stageNumber}ŠK‘w";
-        _stageText = FindObjectOfType<Text>();
-        _director = FindObjectOfType<PlayableDirector>();
     }
-
-    private void OnEnable()
+    private void Update()
     {
-        _director.stopped += DirectorStop;
+        if (_stageText == null)
+        {
+            _stageText = FindObjectOfType<Text>();
+            _stageText.text = $"{_stageNumber}ŠK‘w";
+        }
+        if (_director == null)
+        {
+            _director = FindObjectOfType<PlayableDirector>();
+            _director.stopped += DirectorStop;
+        }
     }
 
     private void OnDisable()
