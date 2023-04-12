@@ -9,43 +9,33 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
     const int ROUTE = 99;
     int[,] _map;
     int[] _visitedArray;
-    Cell _start;
-    Cell _goal;
+    Position _start;　//スタートのポジション
+    Position _goal;　//ゴールのポジション
 
+    //マップの横の広さを取得
     int MapWidth
     {
         get { return _map.GetLength(0); }
     }
 
+    //マップの縦の広さを取得
     int MapHeight
     {
         get { return _map.GetLength(1); }
     }
 
-    public BreadthSearch(int[,] map)
+    //探索メソッド
+    public void Search(int[,] map, Position start, Position goal)
     {
-        this._map = map;
-    }
-
-    private class Cell
-    {
-        public int x;
-        public int y;
-        public Cell(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    public void Search()
-    {
-        _visitedArray = new int[MapWidth * MapHeight];
-        _start = new Cell(1, 1);
-        _goal = new Cell(MapWidth - 2, MapHeight - 2);
+        _map = map; //マップデータ
+        _visitedArray = new int[MapWidth * MapHeight];　//探索済みの場所を格納する配列
+        //_start = new Position(1, 1);　//スタートのポジション
+        //_goal = new Position(MapWidth - 2, MapHeight - 2);　//ゴールのポジション
+        _start = start;
+        _goal = goal;
 
         bool isGoal = false;
-        Queue<Cell> queue = new Queue<Cell>();
+        Queue<Position> queue = new Queue<Position>();
         queue.Enqueue(_start);
 
         _visitedArray = Enumerable.Repeat(-1, _visitedArray.Length).ToArray();
@@ -53,10 +43,10 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
 
         while(queue.Count > 0 && !isGoal)
         {
-            Cell tartget = queue.Dequeue();
+            Position tartget = queue.Dequeue();
             foreach(Direction dir in Enum.GetValues(typeof(Direction)))
             {
-                Cell nextCell = new Cell(tartget.x, tartget.y);
+                Position nextCell = new Position(tartget.x, tartget.y);
                 switch(dir)
                 {
                     case Direction.Up:
@@ -99,6 +89,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         }
     }
 
+    //ゴールまでのルートを配列に格納
     void SetRoute()
     {
         int startIndex = ToIndex(_start);
@@ -113,32 +104,37 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
 
         foreach(var index in route)
         {
-            Cell cell = ToCell(index);
+            Position cell = ToCell(index);
             _map[cell.x, cell.y] = ROUTE;
         }
     }
 
-    void SetVisited(Cell fromCell, Cell toCell)
+    //訪問済みのデータを設定
+    void SetVisited(Position fromCell, Position toCell)
     {
         int fromIndex = ToIndex(fromCell);
         int toIndex = ToIndex(toCell);
         _visitedArray[toIndex] = fromIndex;
     }
 
-    int ToIndex(Cell cell)
+    //Position型(X,Yのクラス)を配列のインデックスに変換
+    int ToIndex(Position cell)
     {
         return cell.x + MapWidth * cell.y;
     }
 
-    Cell ToCell(int index)
+    //配列のインデックスをPosition型(X,Yのクラス)に変換
+    Position ToCell(int index)
     {
-        return new Cell(index % MapWidth, index % MapHeight);
+        return new Position(index % MapWidth, index % MapHeight);
     }
-}
-enum Direction
-{
-    Up = 0,
-    Right = 1,
-    Down = 2,
-    Left = 3,
+
+    //方向の情報
+    enum Direction
+    {
+        Up = 0,
+        Right = 1,
+        Down = 2,
+        Left = 3,
+    }
 }

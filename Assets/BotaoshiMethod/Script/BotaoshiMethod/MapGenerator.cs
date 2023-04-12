@@ -29,18 +29,12 @@ public class MapGenerator : MonoBehaviour
         MapCreate(_map);
     }
 
-    //public void Create()
-    //{
-    //    _map = MapMethod.Generator(_width, _height);
-    //    MapCreate(_map);
-    //}
-
     void MapCreate(int[,] map)
     {
-        float y = 0;
+        int y = 0;
         for(int i = 0; i < map.GetLength(1); i++)
         {
-            float x = 0;
+            int x = 0;
             for (int j = 0; j < map.GetLength(0); j++)
             {
                 if(map[i, j] == MapMethod.WALL)
@@ -52,9 +46,9 @@ public class MapGenerator : MonoBehaviour
                     _pathPosition.Add(new Position(x, y));
                     Instantiate(_path, new Vector2(x, y), transform.rotation);
                 }
-                x += 1f;
+                x += 1;
             }
-            y += 1f;
+            y += 1;
         }
         PlayerSpawn();
     }

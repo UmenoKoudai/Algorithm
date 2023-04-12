@@ -2,10 +2,10 @@ using System;
 
 public class Position
 {
-    public float x { get; set; }
-    public float y { get; set; }
+    public int x { get; set; }
+    public int y { get; set; }
 
-    public Position(float x, float y)
+    public Position(int x, int y)
     {
         this.x = x;
         this.y = y;
