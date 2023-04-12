@@ -23,7 +23,14 @@ public class MapGenerator : MonoBehaviour
         _width = _mapSize;
         _height = _mapSize;
     }
+
     private void Start()
+    {
+        _map = MapMethod.Generator(_width, _height);
+        MapCreate(_map);
+    }
+
+    public void Create()
     {
         _map = MapMethod.Generator(_width, _height);
         MapCreate(_map);

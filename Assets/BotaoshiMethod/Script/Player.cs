@@ -11,13 +11,10 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        if (GameManager.Instance.IsGame)
-        {
-            float x = Input.GetAxisRaw("Horizontal");
-            float y = Input.GetAxisRaw("Vertical");
-            _rb.velocity = new Vector2(x, y) * _moveSpeed;
-            Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -100);
-        }
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+        _rb.velocity = new Vector2(x, y) * _moveSpeed;
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -100);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

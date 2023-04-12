@@ -7,7 +7,7 @@ public class GameManager : InstanceSystem<GameManager>
     Text _stageText;
     PlayableDirector _director;
     int _stageNumber = 1;
-    bool _isGame;
+    bool _isGame = true;
 
     public int StageNumber { get => _stageNumber; set => _stageNumber = value; }
     public bool IsGame { get => _isGame; }
