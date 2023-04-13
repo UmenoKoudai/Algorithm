@@ -21,7 +21,7 @@ public class InstanceSystem<T> : MonoBehaviour where T : MonoBehaviour
             return _instance;
         }
     }
-    virtual protected void Awake()
+    virtual protected void Awake2()
     {
         if (FindObjectsOfType<T>().Length > 1)
         {

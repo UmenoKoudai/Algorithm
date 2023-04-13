@@ -11,6 +11,9 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
     int[] _visitedArray;
     Position _start;　//スタートのポジション
     Position _goal;　//ゴールのポジション
+    bool _isGoal = false; //ゴールしているかの判定
+
+    public bool IsGoal { get => _isGoal; }
 
     //マップの横の広さを取得
     int MapWidth
@@ -29,13 +32,9 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
     {
         _map = map; //マップデータ
         _visitedArray = new int[MapWidth * MapHeight];　//探索済みの場所を格納する配列
-        //_start = new Position(1, 1);　//スタートのポジション
-        //_goal = new Position(MapWidth - 2, MapHeight - 2);　//ゴールのポジション
-        _start = start;
-        _goal = goal;
-
-        //ゴールしているかの判定
-        bool isGoal = false;
+        _start = start; //スタートのポジション
+        _goal = goal; //ゴールのポジション
+        GameObject route = (GameObject)Resources.Load("Route");
         Queue<Position> queue = new Queue<Position>();
         queue.Enqueue(_start);
 
@@ -45,7 +44,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         _visitedArray[ToIndex(_start)] = ToIndex(_start);
 
         //queueに値があったら(基本スタートが入ってる)&&今ゴールまで探索していなければ
-        while(queue.Count > 0 && !isGoal)
+        while(queue.Count > 0 && !_isGoal)
         {
             //今queueに入っている最下層(要素0)を出して変数に代入する
             Position tartget = queue.Dequeue();
@@ -53,7 +52,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
             foreach(Direction dir in Enum.GetValues(typeof(Direction)))
             {
                 //移動先の場所を保管する為の変数、その為targetに格納した前回の場所を最初に格納する
-                Position nextCell = tartget;
+                Position nextCell = new Position(tartget.x, tartget.y);
                 switch(dir)
                 {
                     case Direction.Up:　//上
@@ -83,11 +82,12 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
                             Debug.Log("ゴールに着きました");
                             queue.Clear();
                             queue.Enqueue(nextCell);
-                            isGoal = true;
+                            _isGoal = true;
                             break;
                         }
                         else
                         {
+                            Instantiate(route, new Vector3(nextCell.x, nextCell.y, 0), transform.rotation);
                             //次のtargetになる場所を格納
                             queue.Enqueue(nextCell);
                         }
@@ -96,14 +96,14 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
             }
         }
         //ゴール地点まで行ったらスタートからゴールまでのルートを表示する
-        if(isGoal)
-        {
-            SetRoute();
-        }
+        //if(_isGoal)
+        //{
+        //    SetRoute();
+        //}
     }
 
     //ゴールから逆算してスタートまでのルートを求める
-    void SetRoute()
+    public List<Position> SetRoute()
     {
         //スタート地点をインデックスに変換
         int startIndex = ToIndex(_start);　//11
@@ -111,22 +111,24 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         int goalIndex = ToIndex(_goal);　//88
         //ゴールのインデックスに格納されている数値を代入
         int beforeIndex = _visitedArray[goalIndex];　//87
-        List<int> route = new List<int>();
+        List<int> routeIndex = new List<int>();
+        List<Position> routePosition = new List<Position>();
         //配列の要素数が0以上　&&　今参照している配列の数値がスタートと同じじゃなければ
         while(beforeIndex >= 0 && beforeIndex != startIndex)
         {
             //ルートの情報を格納
-            route.Add(beforeIndex);
+            routeIndex.Add(beforeIndex);
             //次のルート情報をセット
             beforeIndex = _visitedArray[beforeIndex];
         }
 
         //計算したルートをPosition型に変換してマップデータにルート情報を反映
-        foreach(var index in route)
+        foreach(var index in routeIndex)
         {
             Position cell = ToCell(index);
-            _map[cell.x, cell.y] = ROUTE;
+            routePosition.Add(cell);
         }
+        return routePosition;
     }
 
     //訪問済みのデータを設定
