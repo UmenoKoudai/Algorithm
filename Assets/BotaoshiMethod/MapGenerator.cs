@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class MapGenerator : MonoBehaviour
 {
     [Header("マップの全体サイズ")]
-    [SerializeField, Tooltip("マップサイズ"), Range(5, 50)] int _mapSize;
+    [SerializeField, Range(5, 50)] int _mapSize;
     List<Position> _pathPosition = new List<Position>();
     Position _goalPosition;
     Position _startPosition;

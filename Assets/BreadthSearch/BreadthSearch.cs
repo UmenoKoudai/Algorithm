@@ -103,7 +103,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
     }
 
     //ゴールから逆算してスタートまでのルートを求める
-    public List<Position> SetRoute()
+    public Queue<Position> SetRoute()
     {
         //スタート地点をインデックスに変換
         int startIndex = ToIndex(_start);　//11
@@ -112,7 +112,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         //ゴールのインデックスに格納されている数値を代入
         int beforeIndex = _visitedArray[goalIndex];　//87
         List<int> routeIndex = new List<int>();
-        List<Position> routePosition = new List<Position>();
+        Queue<Position> routePosition = new Queue<Position>();
         //配列の要素数が0以上　&&　今参照している配列の数値がスタートと同じじゃなければ
         while(beforeIndex >= 0 && beforeIndex != startIndex)
         {
@@ -126,7 +126,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         foreach(var index in routeIndex)
         {
             Position cell = ToCell(index);
-            routePosition.Add(cell);
+            routePosition.Enqueue(cell);
         }
         return routePosition;
     }

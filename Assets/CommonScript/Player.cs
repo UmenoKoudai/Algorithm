@@ -6,9 +6,11 @@ using System.Collections.Generic;
 public class Player : MonoBehaviour
 {
     [SerializeField] int _moveSpeed;
+    [SerializeField] float _stopDistance;
     Rigidbody2D _rb;
-    List<Position> routeList = new List<Position>();
-    int _moveIndex = 
+    Queue<Position> route = new Queue<Position>();
+    Position _nextPosition;
+    bool _isGoal;
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -17,13 +19,28 @@ public class Player : MonoBehaviour
     {
         if(BreadthSearch.Instance.IsGoal)
         {
-            routeList =  BreadthSearch.Instance.SetRoute();
+            route =  BreadthSearch.Instance.SetRoute();
+            _nextPosition = route.Dequeue();
+            while(!_isGoal)
+            {
+                var distance = Vector3.Distance(transform.position, new Vector3(_nextPosition.x, _nextPosition.y, 0));
+                if(distance > _stopDistance)
+                {
+                    var dir = (new Vector3(_nextPosition.x, _nextPosition.y, 0) - transform.position).normalized;
+                    _rb.velocity = dir * _moveSpeed;
+                }
+                else
+                {
+                    _nextPosition = route.Dequeue();
+                }
+            }
 
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        _isGoal = true;
         collision.GetComponent<IAction>().Action();
     }
 }

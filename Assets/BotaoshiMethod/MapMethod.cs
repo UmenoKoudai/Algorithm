@@ -83,6 +83,7 @@ public static class MapMethod
                             wallY--;　//上
                             break;
                     }
+
                     //倒した先にすでに壁がなければ壁を作る
                     if(map[wallX, wallY] != WALL)
                     {
