@@ -34,7 +34,6 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         _visitedArray = new int[MapWidth * MapHeight];　//探索済みの場所を格納する配列
         _start = start; //スタートのポジション
         _goal = goal; //ゴールのポジション
-        GameObject route = (GameObject)Resources.Load("Route");
         Queue<Position> queue = new Queue<Position>();
         queue.Enqueue(_start);
 
@@ -87,7 +86,6 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
                         }
                         else
                         {
-                            Instantiate(route, new Vector3(nextCell.x, nextCell.y, 0), transform.rotation);
                             //次のtargetになる場所を格納
                             queue.Enqueue(nextCell);
                         }
@@ -96,14 +94,14 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
             }
         }
         //ゴール地点まで行ったらスタートからゴールまでのルートを表示する
-        //if(_isGoal)
-        //{
-        //    SetRoute();
-        //}
+        if (_isGoal)
+        {
+            SetRoute();
+        }
     }
 
     //ゴールから逆算してスタートまでのルートを求める
-    public Queue<Position> SetRoute()
+    public void SetRoute()
     {
         //スタート地点をインデックスに変換
         int startIndex = ToIndex(_start);　//11
@@ -112,9 +110,10 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         //ゴールのインデックスに格納されている数値を代入
         int beforeIndex = _visitedArray[goalIndex];　//87
         List<int> routeIndex = new List<int>();
-        Queue<Position> routePosition = new Queue<Position>();
+        List<Position> routePosition = new List<Position>();
+        GameObject route = (GameObject)Resources.Load("Route");
         //配列の要素数が0以上　&&　今参照している配列の数値がスタートと同じじゃなければ
-        while(beforeIndex >= 0 && beforeIndex != startIndex)
+        while (beforeIndex >= 0 && beforeIndex != startIndex)
         {
             //ルートの情報を格納
             routeIndex.Add(beforeIndex);
@@ -126,9 +125,10 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         foreach(var index in routeIndex)
         {
             Position cell = ToCell(index);
-            routePosition.Enqueue(cell);
+            routePosition.Add(cell);
+            Instantiate(route, new Vector3(cell.x, cell.y, 0), transform.rotation);
         }
-        return routePosition;
+        Player.Instance.Route = routePosition;
     }
 
     //訪問済みのデータを設定
