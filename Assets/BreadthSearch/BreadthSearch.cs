@@ -36,6 +36,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         _goal = goal; //ゴールのポジション
         Queue<Position> queue = new Queue<Position>();
         queue.Enqueue(_start);
+        _isGoal = false;
 
         //探索済みの配列に初期値(-1)を代入
         _visitedArray = Enumerable.Repeat(-1, _visitedArray.Length).ToArray();

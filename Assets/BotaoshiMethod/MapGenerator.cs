@@ -85,6 +85,7 @@ public class MapGenerator : MonoBehaviour
             _goalPosition = _pathPosition[random];
         }
         Instantiate(goal, new Vector3(_goalPosition.x, _goalPosition.y, 0), transform.rotation);
+        //BreadthSearch.Instance.Search(_map, _startPosition, _goalPosition);
     }
 
     public void AutoMove()
