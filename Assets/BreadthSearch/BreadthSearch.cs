@@ -37,6 +37,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         Queue<Position> queue = new Queue<Position>();
         queue.Enqueue(_start);
         _isGoal = false;
+        GameObject route = (GameObject)Resources.Load("Route");
 
         //探索済みの配列に初期値(-1)を代入
         _visitedArray = Enumerable.Repeat(-1, _visitedArray.Length).ToArray();
@@ -76,8 +77,9 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
                     {
                         //探索した場所を配列に格納
                         SetVisited(tartget, nextCell);
+                        //Instantiate(route, new Vector3(nextCell.x, nextCell.y, 0), transform.rotation);
                         //探索した場所がゴールと同じ場所だったら終了
-                        if(nextCell.x == _goal.x && nextCell.y == _goal.y)
+                        if (nextCell.x == _goal.x && nextCell.y == _goal.y)
                         {
                             Debug.Log("ゴールに着きました");
                             queue.Clear();
@@ -114,7 +116,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
         List<Position> routePosition = new List<Position>();
         GameObject route = (GameObject)Resources.Load("Route");
         //配列の要素数が0以上　&&　今参照している配列の数値がスタートと同じじゃなければ
-        while (beforeIndex >= 0 && beforeIndex != startIndex)
+        while (beforeIndex != startIndex)
         {
             //ルートの情報を格納
             routeIndex.Add(beforeIndex);
