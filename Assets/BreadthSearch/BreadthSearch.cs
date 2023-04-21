@@ -6,32 +6,20 @@ using System;
 
 public class BreadthSearch : InstanceSystem<BreadthSearch>
 {
-    const int ROUTE = 99;
     int[,] _map;
     int[] _visitedArray;
+    MapGenerator _mapData;
     Position _start;　//スタートのポジション
     Position _goal;　//ゴールのポジション
     bool _isGoal = false; //ゴールしているかの判定
 
     public bool IsGoal { get => _isGoal; }
-
-    //マップの横の広さを取得
-    int MapWidth
-    {
-        get { return _map.GetLength(0); }
-    }
-
-    //マップの縦の広さを取得
-    int MapHeight
-    {
-        get { return _map.GetLength(1); }
-    }
-
     //探索メソッド
-    public void Search(int[,] map, Position start, Position goal)
+    public void Search(Position start, Position goal)
     {
-        _map = map; //マップデータ
-        _visitedArray = new int[MapWidth * MapHeight];　//探索済みの場所を格納する配列
+        _mapData = FindObjectOfType<MapGenerator>();
+        _map = _mapData.Map; //マップデータ
+        _visitedArray = new int[_mapData.Width * _mapData.Height];　//探索済みの場所を格納する配列
         _start = start; //スタートのポジション
         _goal = goal; //ゴールのポジション
         Queue<Position> queue = new Queue<Position>();
@@ -70,7 +58,7 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
                         break;
                 }
                 //マップサイズ内の数値だったら
-                if(nextCell.x >= 0 && nextCell.y >= 0 && nextCell.x <= MapWidth && nextCell.y <= MapHeight)
+                if(nextCell.x >= 0 && nextCell.y >= 0 && nextCell.x <= _mapData.Width && nextCell.y <= _mapData.Height)
                 {
                     //探索先の配列にある数値が0未満(-1だったら)　&&　マップデータで見て通路だったら
                     if(_visitedArray[ToIndex(nextCell)] < 0 && _map[nextCell.x, nextCell.y] == MapMethod.PATH)
@@ -148,13 +136,13 @@ public class BreadthSearch : InstanceSystem<BreadthSearch>
     //Position型(X,Yのクラス)を配列のインデックスに変換
     int ToIndex(Position cell)
     {
-        return cell.x + MapWidth * cell.y;
+        return cell.x + _mapData.Width * cell.y;
     }
 
     //配列のインデックスをPosition型(X,Yのクラス)に変換
     Position ToCell(int index)
     {
-        return new Position(index % MapWidth, index / MapWidth);
+        return new Position(index % _mapData.Width, index / _mapData.Width);
     }
 
     //方向の情報

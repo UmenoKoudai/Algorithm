@@ -14,6 +14,7 @@ public class MapGenerator : MonoBehaviour
 
     public int Width { get => _width; }
     public int Height { get => _height; }
+    public int[,] Map { get => _map; }
 
     private void Awake()
     {
@@ -90,6 +91,6 @@ public class MapGenerator : MonoBehaviour
 
     public void AutoMove()
     {
-        BreadthSearch.Instance.Search(_map, _startPosition, _goalPosition);
+        BreadthSearch.Instance.Search(_startPosition, _goalPosition);
     }
 }
