@@ -8,6 +8,7 @@ public class MapGenerator : MonoBehaviour
     List<Position> _pathPosition = new List<Position>();
     Position _goalPosition;
     Position _startPosition;
+    Position _pos = new Position();
     int[,] _map;
     int _width;
     int _height;

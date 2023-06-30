@@ -1,5 +1,3 @@
-using System;
-
 public class Position
 {
     public int x { get; set; }
